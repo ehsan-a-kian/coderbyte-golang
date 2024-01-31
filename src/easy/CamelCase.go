@@ -2,36 +2,23 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 )
 
 // CamelCase converts the input string to camel case format.
 func CamelCase(str string) string {
-	words := splitWords(str)
-	var camel strings.Builder
+	words := strings.FieldsFunc(strings.ToLower(str), func(r rune) bool {
+		return !('a' <= r && r <= 'z')
+	})
+	var camel string
 	for i, word := range words {
 		if i == 0 {
-			camel.WriteString(word)
+			camel += word
 		} else {
-			camel.WriteString(strings.ToUpper(word[:1]) + word[1:])
+			camel += strings.Title(word)
 		}
 	}
-	return camel.String()
-}
-
-// splitWords is a helper function which splits the input string into words.
-func splitWords(str string) []string {
-	str = strings.ToLower(str)
-	re := regexp.MustCompile("[^a-z]+")
-	words := re.Split(str, -1)
-	var result []string
-	for _, word := range words {
-		if word != "" {
-			result = append(result, word)
-		}
-	}
-	return result
+	return camel
 }
 
 func main() {
